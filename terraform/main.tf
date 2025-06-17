@@ -126,3 +126,51 @@ resource "aws_security_group" "endpoint_sg" {
     }
 }
 
+# IAM Role for EC2 Instances (for SSM access)
+resource "aws_iam_role" "ec2_role" {
+    name = "EC2-SSM-Role"
+    assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ec2_ssm_policy" {
+    role = aws_iam_role.ec2_role.name
+    policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+    name = "EC2-SSM-Profile"
+    role = aws_iam_role.ec2_role.name
+}
+
+# API EC2 Instance
+resouce "aws_instance" "api_server" {
+    ami = "ami-0cbad6815f3a09a6d"
+    Linux 2 in us-west-1
+    instance_type = "t2.micro"
+    subnet_id = aws_subnet.service_private_subnet.id
+    vpc_security_group_ids = [aws_security_group.api_sg.id]
+    user_data = file("user_data_api.sh")
+    iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+    tags = {
+        Name = "API-Server"
+    }
+}
+
+#Consumer EC2 Instance
+resource "aws_instance" "consumer_app" {
+    ami = "ami-0cbad6815f3a09a6d"
+    instance_type = "t2.micro"
+    subnet_id = aws_subnet.consumer_public_subnet.id
+    vpc_security_group_ids = 
+}
