@@ -1,0 +1,33 @@
+# Terraform state
+*.tfstate
+*.tfstate.backup
+
+# Crash log files
+crash.log
+
+# Terraform plan output
+*.tfplan
+
+# Sensitive variable files (if used)
+*.tfvars
+*.tfvars.json
+
+# Override files that shouldn't be checked in
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Module directories from Terraform Registry or Git sources
+.terraform/
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore all files larger than 10MB (Git doesn't support size-based ignores natively,
+# but you can add such files manually via a pre-commit hook instead)
+
+# Optional: ignore large custom files by name
+large_module_output.json
+temp_state_dump.json
