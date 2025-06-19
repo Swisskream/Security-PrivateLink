@@ -35,6 +35,7 @@ resource "aws_subnet" "consumer_public_subnet" {
   vpc_id            = aws_vpc.consumer_vpc.id
   cidr_block        = var.consumer_public_subnet_cidr
   availability_zone = "${var.aws_region}a"
+  map_public_ip_on_launch = true
   tags = {
     Name = "Consumer-Public-Subnet"
   }
@@ -51,7 +52,7 @@ resource "aws_internet_gateway" "consumer_igw" {
 # Route Table for Consumer Public Subnet
 resource "aws_route_table" "consumer_public_rt" {
   vpc_id = aws_vpc.consumer_vpc.id
-  route = {
+  route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.consumer_igw.id
   }
@@ -200,7 +201,7 @@ resource "aws_lb_target_group" "api_target" {
   }
 }
 
-resouce "aws_lb_target_group_attachment" "api_target_attachment" {
+resource "aws_lb_target_group_attachment" "api_target_attachment" {
   target_group_arn = aws_lb_target_group.api_target.arn
   target_id        = aws_instance.api_server.id
   port             = 80

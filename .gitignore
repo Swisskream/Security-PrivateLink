@@ -19,7 +19,7 @@ override.tf.json
 *_override.tf.json
 
 # Module directories from Terraform Registry or Git sources
-.terraform/
+terraform/.terraform/
 
 # CLI configuration files
 .terraformrc
